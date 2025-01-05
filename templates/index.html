@@ -3,369 +3,458 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Air Quality Group 2</title>
-    <meta name="viewport" content="width=device-widht, initial-scale=1.0">
-    <!--meta name="keywords" content="keywords,here"-->
+    <title>Air Quality Dashboard</title>
 
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css"/>
-    <link rel="stylesheet" href="static/css/index.css"/>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js" integrity="sha256-XF29CBwU1MWLaGEnsELogU6Y6rcc5nCkhhx89nFMIDQ=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+    <!-- Fixed duplicate viewport meta tag and improved CSS/JS loading -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <style>
-		.bg-black-alt  {
-			background:#191919;
-		}
-		.text-black-alt  {
-			color:#191919;
-		}
-		.border-black-alt {
-			border-color: #191919;
-		}
-	</style>
+        .grad1 {
+            background-color: #001A3F;
+            background-image: linear-gradient(315deg, #001A3F 0%, #2E003F 74%);
+        }
+
+        .grad2 {
+            background-color: #001A3F;
+            background-image: linear-gradient(315deg, #001A3F 0%, #2E003F 74%);
+        }
+
+        /* Hero Section Styles */
+        .hero {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-image-container {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+        }
+
+        .hero-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        /* Optional overlay for better text readability */
+        .hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 21, 69, 0.44);
+            z-index: 1;
+        }
+
+
+        .team-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .team-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1.5rem;
+
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            /* From https://css.glass */
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(4.9px);
+            -webkit-backdrop-filter: blur(4.9px);
+            border: 1px solid rgba(255, 255, 255, 0.32);
+        }
+
+        .team-card img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+        }
+    </style>
 
 </head>
 
 <body class="font-sans leading-normal tracking-normal">
-
-    <nav id="header" class="bg-gray-900 fixed w-full z-10 top-0 shadow">
-		<div class="w-full container mx-auto flex flex-wrap items-center mt-0 pt-3 pb-3 md:pb-0">
-			<div class="pl-8">
-				<div class="flex relative inline-block float-right">
-                    <div class="block lg:hidden pr-4">
-					<button id="nav-toggle" class="flex items-center px-3 py-2 border rounded text-gray-500 border-gray-600 hover:text-gray-100 hover:border-teal-500 appearance-none focus:outline-none">
-						<svg class="fill-current h-3 w-3" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>Menu</title><path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"/></svg>
-					</button>
-				    </div>
-				</div>
-			</div>
-
-			<div class="w-full flex-grow lg:flex lg:items-center lg:w-auto hidden lg:block mt-2 lg:mt-0 bg-gray-900 z-20" id="nav-content">
-				<ul class="list-reset lg:flex flex-1 items-center px-4 md:px-0">
-					<li class="mr-6 my-2 md:my-0"><a href="#home" class="block py-1 md:py-3 pl-1 align-middle text-gray-500 no-underline hover:text-gray-100 border-b-2 border-gray-900 hover:border-blue-400"><i class="fas fa-home fa-fw mr-3"></i><span class="pb-1 md:pb-0 text-sm">Home</span></a></li>
-					<li class="mr-6 my-2 md:my-0"><a href="#status" class="block py-1 md:py-3 pl-1 align-middle text-gray-500 no-underline hover:text-gray-100 border-b-2 border-gray-900  hover:border-pink-400"><i class="fas fa-tasks fa-fw mr-3"></i><span class="pb-1 md:pb-0 text-sm">Status</span></a></li>
-                    <li class="mr-6 my-2 md:my-0"><a href="#visual" class="block py-1 md:py-3 pl-1 align-middle text-gray-500 no-underline hover:text-gray-100 border-b-2 border-gray-900  hover:border-green-400"><i class="fas fa-chart-area fa-fw mr-3"></i><span class="pb-1 md:pb-0 text-sm">Analytics</span></a></li>
-                    <li class="mr-6 my-2 md:my-0"><a href="#about" class="block py-1 md:py-3 pl-1 align-middle text-gray-500 no-underline hover:text-gray-100 border-b-2 border-gray-900  hover:border-red-400"><i class="fa fa-wallet fa-fw mr-3"></i><span class="pb-1 md:pb-0 text-sm">About Us</span></a></li>
-				</ul>
-			</div>
-		</div>
-	</nav>
-
-        	<!--Container-->
-	<div class="container min-w-full mx-auto">
-
-		<div class="text-white leading-normal">
-
-            <section id="home" class="w-full min-h-screen flex flex-wrap items-center justify-center bg-gray-500">
-                <h1 class="text-4xl font-bold">Welcome</h1>
-            </section>
-
-            <section id="status" class="w-full min-h-screen flex flex-wrap items-center justify-center bg-black-alt">
-                <div class="flex items-center justify-center flex-wrap">
-                    <div class="w-full mx-auto p-3">
-                        <div class="snap-start flex flex-col rounded p-4 w-full">
-                            <div class="font-bold text-blue-400 text-4xl">Status</div>
-                            <div class="flex flex-auto text-blue-400 justify-between mt-6">
-                                <svg class="mx-auto h-20 w-20 hover:scale-105 good" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path fill="currentColor" d="M248 8C111 8 0 119 0 256s111 248 248 248 248-111 248-248S385 8 248 8zm0 448c-110.3 0-200-89.7-200-200S137.7 56 248 56s200 89.7 200 200-89.7 200-200 200zm-80-216c17.7 0 32-14.3 32-32s-14.3-32-32-32-32 14.3-32 32 14.3 32 32 32zm160-64c-17.7 0-32 14.3-32 32s14.3 32 32 32 32-14.3 32-32-14.3-32-32-32zm-80 128c-40.2 0-78 17.7-103.8 48.6-8.5 10.2-7.1 25.3 3.1 33.8 10.2 8.4 25.3 7.1 33.8-3.1 16.6-19.9 41-31.4 66.9-31.4s50.3 11.4 66.9 31.4c8.1 9.7 23.1 11.9 33.8 3.1 10.2-8.5 11.5-23.6 3.1-33.8C326 321.7 288.2 304 248 304z"></path></svg>
-                                <svg class="h-20 w-20 hover:scale-105 Moderate" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path fill="currentColor" d="M248 8C111 8 0 119 0 256s111 248 248 248 248-111 248-248S385 8 248 8zm0 448c-110.3 0-200-89.7-200-200S137.7 56 248 56s200 89.7 200 200-89.7 200-200 200zm-80-216c17.7 0 32-14.3 32-32s-14.3-32-32-32-32 14.3-32 32 14.3 32 32 32zm160-64c-17.7 0-32 14.3-32 32s14.3 32 32 32 32-14.3 32-32-14.3-32-32-32zm8 144H160c-13.2 0-24 10.8-24 24s10.8 24 24 24h176c13.2 0 24-10.8 24-24s-10.8-24-24-24z"></path></svg>
-                                <svg class="mx-auto h-20 w-20 hover:scale-105 Bad" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path fill="currentColor" d="M248 8C111 8 0 119 0 256s111 248 248 248 248-111 248-248S385 8 248 8zm0 448c-110.3 0-200-89.7-200-200S137.7 56 248 56s200 89.7 200 200-89.7 200-200 200zm-80-216c17.7 0 32-14.3 32-32s-14.3-32-32-32-32 14.3-32 32 14.3 32 32 32zm160 0c17.7 0 32-14.3 32-32s-14.3-32-32-32-32 14.3-32 32 14.3 32 32 32zm4 72.6c-20.8 25-51.5 39.4-84 39.4s-63.2-14.3-84-39.4c-8.5-10.2-23.7-11.5-33.8-3.1-10.2 8.5-11.5 23.6-3.1 33.8 30 36 74.1 56.6 120.9 56.6s90.9-20.6 120.9-56.6c8.5-10.2 7.1-25.3-3.1-33.8-10.1-8.4-25.3-7.1-33.8 3.1z"></path></svg>
-                            </div>
-                            <div class="flex flex-row items-center justify-center mt-6"><div class="font-medium text-blue-400 text-2xl overall-status">Good</div></div>
-                            <div class="flex flex-auto justify-between mt-6">
-                                <div class="flex flex-col items-center mx-auto">
-                                    <div class="font-medium text-gray-400 text-sm">Temperature</div>
-                                    <div class="text-sm text-gray-500 temperature">0°C</div>
-                                </div>
-                                <div class="flex flex-col items-center">
-                                    <div class="font-medium text-gray-400 text-sm">Humidity</div>
-                                    <div class="text-sm text-gray-500 humidity">0%</div>
-                                </div>
-                                <div class="flex flex-col items-center mx-auto">
-                                    <div class="font-medium text-gray-400 text-sm">Gas Sensor</div>
-                                    <div class="text-sm text-gray-500 gas-sensor">0ppm</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-
-            <section id="visual" class="w-full min-h-screen bg-gray-500 content-center">
-                <div class="flex flex-wrap justify-center w-full">
-                    <!-- Temperature Card -->
-                    <div class="p-3 bg-gray-900">
-                        <div class="bg-white border border-gray-800 rounded shadow">
-                            <div class="border-b border-gray-800 p-3">
-                                <h5 class="font-bold uppercase text-gray-600">Temperature</h5>
-                            </div>
-                            <div class="p-5">
-                                <canvas id="chartjs-0" class="chartjs" width="undefined" height="undefined"></canvas>
-                                <script>
-                                    const dataTemp = {
-                                        labels: [],
-                                        datasets: [{
-                                            label: "Temperature",
-                                            data: [],
-                                            fill: false,
-                                            borderColor: "rgb(255, 99, 132)",
-                                            lineTension: 0.3
-                                        }]
-                                    };
-
-                                    const configTemp = {
-                                        type: 'line',
-                                        data: dataTemp
-                                    };
-
-                                    const chartTemp = new Chart(
-                                        document.getElementById('chartjs-0').getContext('2d'),
-                                        configTemp
-                                    );
-
-                                    setInterval(() => {
-                                        const now = new Date();
-                                        const timeLabel = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
-                                        const temperature = Math.floor(Math.random() * 100);
-
-                                        if (dataTemp.datasets[0].data.length >= 20) {
-                                            dataTemp.labels.shift();
-                                            dataTemp.datasets[0].data.shift();
-                                        }
-
-                                        dataTemp.labels.push(timeLabel);
-                                        dataTemp.datasets[0].data.push(temperature);
-                                        chartTemp.update();
-                                    }, 2000);
-                                </script>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /Temperature Card -->
-
-                    <!-- Humidity Card -->
-                    <div class="p-3 bg-gray-900">
-                        <div class="bg-white border border-gray-800 rounded shadow">
-                            <div class="border-b border-gray-800 p-3">
-                                <h5 class="font-bold uppercase text-gray-600">Humidity</h5>
-                            </div>
-                            <div class="p-5">
-                                <canvas id="chartjs-1" class="chartjs" width="undefined" height="undefined"></canvas>
-                                <script>
-                                    const dataHumidity = {
-                                        labels: [],
-                                        datasets: [{
-                                            label: "Humidity",
-                                            data: [],
-                                            fill: false,
-                                            borderColor: "rgb(54, 162, 235)",
-                                            lineTension: 0.3
-                                        }]
-                                    };
-
-                                    const configHumidity = {
-                                        type: 'line',
-                                        data: dataHumidity
-                                    };
-
-                                    const chartHumidity = new Chart(
-                                        document.getElementById('chartjs-1').getContext('2d'),
-                                        configHumidity
-                                    );
-
-                                    setInterval(() => {
-                                        const now = new Date();
-                                        const timeLabel = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
-                                        const humidity = Math.floor(Math.random() * 100);
-
-                                        if (dataHumidity.datasets[0].data.length >= 20) {
-                                            dataHumidity.labels.shift();
-                                            dataHumidity.datasets[0].data.shift();
-                                        }
-
-                                        dataHumidity.labels.push(timeLabel);
-                                        dataHumidity.datasets[0].data.push(humidity);
-                                        chartHumidity.update();
-                                    }, 2000);
-                                </script>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /Humidity Card -->
-
-                    <!-- Gas Sensor Card -->
-                    <div class="p-3 bg-gray-900">
-                        <div class="bg-white border border-gray-800 rounded shadow">
-                            <div class="border-b border-gray-800 p-3">
-                                <h5 class="font-bold uppercase text-gray-600">Gas Sensor</h5>
-                            </div>
-                            <div class="p-5">
-                                <canvas id="chartjs-2" class="chartjs" width="undefined" height="undefined"></canvas>
-                                <script>
-                                    const dataGas = {
-                                        labels: [],
-                                        datasets: [{
-                                            label: "Gas Sensor",
-                                            data: [],
-                                            fill: false,
-                                            borderColor: "rgb(75, 192, 192)",
-                                            lineTension: 0.3
-                                        }]
-                                    };
-
-                                    const configGas = {
-                                        type: 'line',
-                                        data: dataGas
-                                    };
-
-                                    const chartGas = new Chart(
-                                        document.getElementById('chartjs-2').getContext('2d'),
-                                        configGas
-                                    );
-
-                                    setInterval(() => {
-                                        const now = new Date();
-                                        const timeLabel = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
-                                        const gasLevel = Math.floor(Math.random() * 100);
-
-                                        if (dataGas.datasets[0].data.length >= 20) {
-                                            dataGas.labels.shift();
-                                            dataGas.datasets[0].data.shift();
-                                        }
-
-                                        dataGas.labels.push(timeLabel);
-                                        dataGas.datasets[0].data.push(gasLevel);
-                                        chartGas.update();
-                                    }, 2000);
-                                </script>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /Gas Sensor Card -->
-                </div>
-            </section>
-
-            <section id="about" class="min-h-screen flex flex-col items-center justify-center">
-                <div class="w-full p-3">
-                            <!--Table Card-->
-                            <div class="bg-gray-900 border border-gray-800 rounded shadow">
-                                <div class="border-b border-gray-800 p-3">
-                                    <h5 class="font-bold uppercase text-gray-600">Table</h5>
-                                </div>
-                                <div class="p-5">
-                                    <table class="w-full p-5 text-gray-700">
-                                        <thead>
-                                            <tr>
-                                                <th class="text-left text-gray-600">Name</th><th class="text-left text-gray-600">Side</th><th class="text-left text-gray-600">Role</th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody>
-                                            <tr>
-                                                <td>Obi Wan Kenobi</td><td>Light</td><td>Jedi</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Greedo</td><td>South</td><td>Scumbag</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Darth Vader</td><td>Dark</td><td>Sith</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    <p class="py-2"><a href="#" class="text-white">See More issues...</a></p>
-                                </div>
-                            </div>
-                    </div>
-            </section>
-
+<!-- Navigation -->
+<nav id="header" class="bg-gray-900 fixed w-full z-10 top-0 shadow">
+    <div class="w-full container mx-auto flex flex-wrap items-center mt-0 pt-3 pb-3 md:pb-0">
+        <div class="w-full flex-grow lg:flex lg:items-center lg:w-auto hidden lg:block mt-2 lg:mt-0 bg-gray-900 z-20"
+             id="nav-content">
+            <ul class="list-reset lg:flex flex-1 items-center px-4 md:px-0">
+                <li class="mr-6 my-2 md:my-0">
+                    <a href="#home"
+                       class="block py-1 md:py-3 pl-1 text-gray-500 hover:text-gray-100 border-b-2 border-gray-900 hover:border-blue-400">
+                        <i class="fas fa-home fa-fw mr-3"></i><span class="text-sm">Home</span>
+                    </a>
+                </li>
+                <li class="mr-6 my-2 md:my-0">
+                    <a href="#status"
+                       class="block py-1 md:py-3 pl-1 text-gray-500 hover:text-gray-100 border-b-2 border-gray-900 hover:border-pink-400">
+                        <i class="fas fa-tasks fa-fw mr-3"></i><span class="text-sm">Status</span>
+                    </a>
+                </li>
+                <li class="mr-6 my-2 md:my-0">
+                    <a href="#visual"
+                       class="block py-1 md:py-3 pl-1 text-gray-500 hover:text-gray-100 border-b-2 border-gray-900 hover:border-green-400">
+                        <i class="fas fa-chart-area fa-fw mr-3"></i><span class="text-sm">Analytics</span>
+                    </a>
+                </li>
+                <li class="mr-6 my-2 md:my-0">
+                    <a href="#about"
+                       class="block py-1 md:py-3 pl-1 text-gray-500 hover:text-gray-100 border-b-2 border-gray-900 hover:border-red-400">
+                        <i class="fas fa-users fa-fw mr-3"></i><span class="text-sm">About Us</span>
+                    </a>
+                </li>
+            </ul>
         </div>
-        <!--/ Console Content-->
     </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container min-w-full mx-auto">
+    <!-- Home Section -->
+    <section class="hero w-full min-h-screen flex items-center justify-center" id="home">
+        <div class="hero-image-container absolute inset-0 w-full h-full">
+            <img src="/static/images/Air2.jpg" alt="Air Quality Background" class="w-full h-full object-cover">
+        </div>
+        <div class="hero-content relative z-10 text-center px-4">
+            <h1 class="text-6xl font-bold text-white drop-shadow-lg">Air Quality Monitoring System</h1>
+        </div>
+    </section>
+
+    <section id="status" class="w-full min-h-screen bg-gray-900 flex items-center justify-center p-4">
+        <div class="max-w-4xl w-full">
+            <!-- Status Header -->
+            <div class="text-center mb-8">
+                <h2 class="text-4xl font-bold text-blue-400 mb-2">Air Quality Status</h2>
+                <p class="text-gray-400">Real-time monitoring of environmental conditions</p>
+            </div>
+
+            <!-- Status Cards -->
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Temperature Card -->
+                <div class="bg-gray-800 rounded-lg p-6 transform hover:scale-105 transition-transform duration-300">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="text-gray-400">
+                            <i class="fas fa-temperature-high text-2xl"></i>
+                        </div>
+                        <div class="text-right">
+                            <h3 class="text-gray-400 text-sm uppercase">Temperature</h3>
+                            <p class="temperature text-2xl font-bold text-white">--°C</p>
+                        </div>
+                    </div>
+                    <div class="w-full bg-gray-700 rounded-full h-2 mt-4">
+                        <div class="temp-indicator bg-red-500 h-2 rounded-full" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Humidity Card -->
+                <div class="bg-gray-800 rounded-lg p-6 transform hover:scale-105 transition-transform duration-300">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="text-gray-400">
+                            <i class="fas fa-tint text-2xl"></i>
+                        </div>
+                        <div class="text-right">
+                            <h3 class="text-gray-400 text-sm uppercase">Humidity</h3>
+                            <p class="humidity text-2xl font-bold text-white">--%</p>
+                        </div>
+                    </div>
+                    <div class="w-full bg-gray-700 rounded-full h-2 mt-4">
+                        <div class="humidity-indicator bg-blue-500 h-2 rounded-full" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Air Quality Card -->
+                <div class="bg-gray-800 rounded-lg p-6 transform hover:scale-105 transition-transform duration-300">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="text-gray-400">
+                            <i class="fas fa-wind text-2xl"></i>
+                        </div>
+                        <div class="text-right">
+                            <h3 class="text-gray-400 text-sm uppercase">Air Quality</h3>
+                            <p class="air-quality-value text-2xl font-bold text-white">-- ppm</p>
+                        </div>
+                    </div>
+                    <div class="w-full bg-gray-700 rounded-full h-2 mt-4">
+                        <div class="air-quality-indicator bg-green-500 h-2 rounded-full" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Overall Status Indicator -->
+            <div class="mt-8 bg-gray-800 rounded-lg p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-gray-400 text-sm uppercase mb-1">Predict</h3>
+                        <p class="overall-status text-2xl font-bold text-white">Checking...</p>
+                    </div>
+                    <div class="flex space-x-4">
+                        <!-- Status Icons -->
+                        <div class="status-icon good hidden">
+                            <i class="fas fa-smile text-green-500 text-4xl"></i>
+                        </div>
+                        <div class="status-icon moderate hidden">
+                            <i class="fas fa-meh text-yellow-500 text-4xl"></i>
+                        </div>
+                        <div class="status-icon poor hidden">
+                            <i class="fas fa-frown text-red-500 text-4xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <p class="status-message text-gray-400 mt-2">System is monitoring air quality...</p>
+            </div>
+        </div>
+    </section>
+
+    <!------------VISUAL--------------->
+    <section id="visual" class="w-full min-h-screen content-center " style="background-image: url('/static/images/visual.png');">
+        <div class="grid md:grid-cols-3 flex flex-wrap justify-center w-full">
+            <!-- Temperature Card -->
+            <div class="p-3">
+                <div class="bg-white border border-gray-800 rounded shadow">
+                    <div class="border-b border-gray-800 p-3">
+                        <h5 class="font-bold uppercase text-gray-600">Temperature</h5>
+                    </div>
+                    <div class="p-5">
+                        <canvas id="temperature" class="chartjs" width="undefined" height="undefined"></canvas>
+                    </div>
+                </div>
+            </div>
+            <!-- /Temperature Card -->
+
+            <!-- Humidity Card -->
+            <div class="p-3">
+                <div class="bg-white border border-gray-800 rounded shadow">
+                    <div class="border-b border-gray-800 p-3">
+                        <h5 class="font-bold uppercase text-gray-600">Humidity</h5>
+                    </div>
+                    <div class="p-5">
+                        <canvas id="humidity" class="chartjs" width="undefined" height="undefined"></canvas>
+                    </div>
+                </div>
+            </div>
+            <!-- /Humidity Card -->
+
+            <!-- Gas Sensor Card -->
+            <div class="p-3">
+                <div class="bg-white border border-gray-800 rounded shadow">
+                    <div class="border-b border-gray-800 p-3">
+                        <h5 class="font-bold uppercase text-gray-600">Gas Sensor</h5>
+                    </div>
+                    <div class="p-5">
+                        <canvas id="gas-sensor" class="chartjs" width="undefined" height="undefined"></canvas>
+                    </div>
+                </div>
+            </div>
+            <!-- /Gas Sensor Card -->
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="grad1 w-full min-h-screen text-white py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center mb-8 text-white">Our Team</h2>
+            <p class="text-center text-white max-w-2xl mx-auto mb-12">
+                As part of our Internet of Things and Machine Learning.
+            </p>
+
+            <div class="team-container">
+                <div class="team-card">
+                    <img src="{{ url_for('static', filename='images/Azha2.jpg') }}" alt="Foto Azha Nawaf Musyafa">
+                    <h3 class="text-white">Azha Nawaf Musyafa</h3>
+                    <p class="text-white">ML Engineer</p>
+                </div>
+                <div class="team-card">
+                    <img src="{{ url_for('static', filename='images/Harfi2.jpg') }}" alt="Foto Harfi Sani Ravada">
+                    <h3 class="text-white">Harfi Sani Ravada</h3>
+                    <p class="text-white">IoT Engineer</p>
+                </div>
+                <div class="team-card">
+                    <img src="{{ url_for('static', filename='images/Aqel3.jpg') }}" alt="Foto Imad Aqel">
+                    <h3 class="text-white">Imad Aqel</h3>
+                    <p class="text-white">Front-End Engineer</p>
+                </div>
+                <div class="team-card">
+                    <img src="{{ url_for('static', filename='images/Rizky.png') }}" alt="Foto Rizky Dinawan">
+                    <h3 class="text-white">Rizky Dinawan</h3>
+                    <p class="text-white">UI/UX Designer</p>
+                </div>
+            </div>
 
 
-    <script>
+            <div class="team-container">
+                <div class="team-card">
+                    <img src="{{ url_for('static', filename='images/Syauqi2.jpg') }}" alt="Foto Syauqiy Mutiara Siddiq">
+                    <h3 class="text-white" >Syauqiy Mutiara Siddiq</h3>
+                    <p class="text-white">IoT Engineer</p>
+                </div>
+                <div class="team-card">
+                    <img src="{{ url_for('static', filename='images/Usamah2.jpg') }}" alt="Foto Usamah Ibnu Diwan">
+                    <h3 class="text-white">Usamah Ibnu Diwan</h3>
+                    <p class="text-white">Back-End Engineer</p>
+                </div>
 
-        var navMenuDiv = document.getElementById("nav-content");
-        var navMenu = document.getElementById("nav-toggle");
+                <div class="team-card">
+                    <img src="{{ url_for('static', filename='images/Zahra2.jpg') }}" alt="Foto Zahra Kusmanidar ">
+                    <h3 class="text-white">Zahra Kusmanidar</h3>
+                    <p class="text-white">IoT Engineer</p>
+                </div>
+            </div>
+            <!-- Repeat for other team members -->
+        </div>
 
-        document.onclick = check;
+    </section>
 
-        function check(e){
-          var target = (e && e.target);
+</div>
 
-          //Nav Menu
-          if (!checkParent(target, navMenuDiv)) {
-            // click NOT on the menu
-            if (checkParent(target, navMenu)) {
-              // click on the link
-              if (navMenuDiv.classList.contains("hidden")) {
-                navMenuDiv.classList.remove("hidden");
-              } else {navMenuDiv.classList.add("hidden");}
-            } else {
-              // click both outside link and outside menu, hide menu
-              navMenuDiv.classList.add("hidden");
+<script>
+    // Charts initialization
+    const charts = {
+        temperature: createChart('temperature', 'Temperature (°C)', 'rgb(239, 68, 68)'),
+        humidity: createChart('humidity', 'Humidity (%)', 'rgb(34, 197, 94)'),
+        airQuality: createChart('gas-sensor', 'Air Quality (ppm)', 'rgb(59, 130, 246)')
+    };
+
+    function createChart(elementId, label, color) {
+        const ctx = document.getElementById(elementId).getContext('2d');
+        return new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: label,
+                    data: [],
+                    borderColor: color,
+                    tension: 0.1,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
             }
-          }
+        });
+    }
 
+    function updateStatusIndicators(data) {
+        // Update temperature indicator
+        const tempPercentage = Math.min((data.temperature / 50) * 100, 100);
+        document.querySelector('.temp-indicator').style.width = `${tempPercentage}%`;
+
+        // Update humidity indicator
+        const humidityPercentage = Math.min((data.humidity / 100) * 100, 100);
+        document.querySelector('.humidity-indicator').style.width = `${humidityPercentage}%`;
+
+        // Update air quality indicator
+        const airQualityPercentage = Math.min((data.airQuality / 1000) * 100, 100);
+        document.querySelector('.air-quality-indicator').style.width = `${airQualityPercentage}%`;
+
+        // Update overall status
+        const statusIcons = document.querySelectorAll('.status-icon');
+        statusIcons.forEach(icon => icon.classList.add('hidden'));
+
+        let statusText, statusMessage, iconClass;
+
+        if (data.airQuality <= 450) {
+            statusText = 'Good';
+            statusMessage = 'Air quality is within optimal range';
+            iconClass = 'good';
+            document.querySelector('.air-quality-indicator').classList.remove('bg-yellow-500', 'bg-red-500');
+            document.querySelector('.air-quality-indicator').classList.add('bg-green-500');
+        } else if (data.airQuality <= 600) {
+            statusText = 'Moderate';
+            statusMessage = 'Air quality is acceptable but approaching warning levels';
+            iconClass = 'moderate';
+            document.querySelector('.air-quality-indicator').classList.remove('bg-green-500', 'bg-red-500');
+            document.querySelector('.air-quality-indicator').classList.add('bg-yellow-500');
+        } else {
+            statusText = 'Poor';
+            statusMessage = 'Air quality requires immediate attention';
+            iconClass = 'poor';
+            document.querySelector('.air-quality-indicator').classList.remove('bg-green-500', 'bg-yellow-500');
+            document.querySelector('.air-quality-indicator').classList.add('bg-red-500');
         }
 
-        function checkParent(t, elm) {
-          while(t.parentNode) {
-            if( t == elm ) {return true;}
-            t = t.parentNode;
-          }
-          return false;
+        document.querySelector('.overall-status').textContent = statusText;
+        document.querySelector('.status-message').textContent = statusMessage;
+        document.querySelector(`.status-icon.${iconClass}`).classList.remove('hidden');
+    }
+
+    // Modify your existing updateSensorData function to include this:
+    function updateSensorData() {
+        fetch('/get_sensor_data')
+            .then(response => response.json())
+            .then(data => {
+                if (!data.success) throw new Error('Failed to fetch sensor data');
+
+                // Update display values
+                document.querySelector('.temperature').textContent = `${data.temperature}°C`;
+                document.querySelector('.humidity').textContent = `${data.humidity}%`;
+                document.querySelector('.air-quality-value').textContent = `${data.airQuality} ppm`;
+
+                // Update status indicators
+                updateStatusIndicators(data);
+
+                // Update charts (your existing chart update code)
+                const timestamp = new Date().toLocaleTimeString();
+                updateChart(charts.temperature, data.temperature, timestamp);
+                updateChart(charts.humidity, data.humidity, timestamp);
+                updateChart(charts.airQuality, data.airQuality, timestamp);
+            })
+            .catch(error => console.error('Error fetching sensor data:', error));
+    }
+
+    function updateChart(chart, newData, timestamp) {
+        chart.data.labels.push(timestamp);
+        chart.data.datasets[0].data.push(newData);
+
+        if (chart.data.labels.length > 10) {
+            chart.data.labels.shift();
+            chart.data.datasets[0].data.shift();
         }
 
-        setInterval(() => {
-        // Ambil data terbaru dari setiap grafik
-            const latestTemp = dataTemp.datasets[0].data.slice(-1)[0] || "N/A";
-            const latestHumidity = dataHumidity.datasets[0].data.slice(-1)[0] || "N/A";
-            const latestGas = dataGas.datasets[0].data.slice(-1)[0] || "N/A";
+        chart.update();
+    }
 
-            // Perbarui elemen di "status"
-            document.querySelector("#status .temperature").textContent = `${latestTemp}°C`;
-            document.querySelector("#status .humidity").textContent = `${latestHumidity}%`;
-            document.querySelector("#status .gas-sensor").textContent = `${latestGas}ppm`;
+    // Initialize data updates
+    updateSensorData();
+    setInterval(updateSensorData, 5000);
 
-            // Tentukan status keseluruhan (Good/Moderate/Bad) berdasarkan logika sederhana
-            const overallStatus = (latestTemp < 30 && latestHumidity < 70 && latestGas < 50) ? "Good" :
-                                  (latestTemp < 50 && latestHumidity < 85 && latestGas < 75) ? "Moderate" : "Bad";
-            document.querySelector("#status .overall-status").textContent = overallStatus;
-        }, 2000);
-
-        // Fungsi untuk mengubah status berdasarkan input atau data yang ada
-        function updateStatus(status) {
-            const statusText = document.querySelector('.overall-status');
-            const goodIcon = document.querySelector('.good');
-            const moderateIcon = document.querySelector('.Moderate');
-            const badIcon = document.querySelector('.Bad');
-
-            // Reset semua ikon
-            goodIcon.classList.remove('good');
-            moderateIcon.classList.remove('Moderate');
-            badIcon.classList.remove('Bad');
-
-            // Update teks status
-            statusText.textContent = status;
-
-            // Tambahkan kelas yang sesuai berdasarkan status
-            if (status === 'Good') {
-                goodIcon.classList.add('good');
-            } else if (status === 'Moderate') {
-                moderateIcon.classList.add('Moderate');
-            } else if (status === 'Bad') {
-                badIcon.classList.add('Bad');
-            }
-        }
-
-        // Memperbarui status dengan contoh
-        updateStatus('Good'); // Panggil fungsi dengan status dinamis
-
-    </script>
-
+    // Mobile menu toggle
+    document.addEventListener('DOMContentLoaded', () => {
+        const navContent = document.getElementById('nav-content');
+        const navToggle = document.createElement('button');
+        navToggle.className = 'block lg:hidden px-3 py-2 border rounded text-gray-500 border-gray-600 hover:text-gray-100 hover:border-blue-500';
+        navToggle.innerHTML = '<i class="fas fa-bars"></i>';
+        navToggle.onclick = () => navContent.classList.toggle('hidden');
+        document.querySelector('nav .container').prepend(navToggle);
+    });
+</script>
 </body>
-
 </html>
