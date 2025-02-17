@@ -8,9 +8,9 @@ from datetime import datetime
 app = Flask(__name__)
 
 # Initialize Firebase Admin
-cred = credentials.Certificate("D:\code-project\iot-web\ixiotml-firebase-adminsdk-6wgza-d3038d371f.json")
+cred = credentials.Certificate("cred-from-firebase-data.file")
 firebase_admin.initialize_app(cred, {
-    'databaseURL': 'https://fixiotml-default-rtdb.asia-southeast1.firebasedatabase.app/'
+    'databaseURL': 'cred-from-firebase-data.file'
 })
 
 # Path file JSON untuk menyimpan data lokal
